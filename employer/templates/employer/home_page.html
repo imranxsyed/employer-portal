@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Employer Portal</title>
+      {% load static %}
+      {% include "employer/add_employee.html" %}
+      {% include "employer/edit_employee.html" %}
+      {% include "employer/delete_employee.html" %}
+
+
+</head>
+<body>
+
+        </p>
+	<div class="container-fluid" >
+  <div style="margin: 10px; ">
+    <h1 class="display-4">Employer Portal</h1>
+    <p class="lead">Manage your employees.</p>
+  </div>
+</div>
+
+
+
+
+<div class="row">
+	<div class=" col-md-8 col-lg-4 " style="margin:auto;">
+		<h3 style="margin: 10px;">Employee List</h3>
+    <button class="btn btn-primary"  style= " float: right; margin-bottom: 2px;" type="button" data-toggle="modal" data-target="#add_employee"><b>Add Employee</b></button>
+		 {% for employee in employees %}
+
+  	<div class="list-item card" style="width: 100%;  padding: 10px; margin:10px;">
+	<div class="row">
+
+	<div class="col">
+		{% if employee.image_url %}
+
+			<img src="{{employee.image_url}}" width="70" height="70" style="float: left; margin: 10px; border-radius: 50%;">
+		{% else %}
+			<img src="https://sterling.com/wp-content/themes/Sterling/images/no-image-found-360x260.png" width="50" height="50" style="float: left; margin: 10px;">
+		{% endif %}
+		<div class="info" style="margin: 10px;" >
+			<h5 style="margin-bottom: 0">{{ employee.first_name }}&nbsp;{{ employee.last_name }}</h5>
+			<p style="margin-top: -1;">{{ employee.title }}</p>
+
+		</div>
+	</div>	
+	<div class="col">
+		<div class="actions" style="float: right; margin: 10px;">
+       
+		<i  style= "color:green;" class ="icon fa fa-edit fa-3x" type="button"  id="{{employee.id}}" data-toggle="modal" data-target="#edit_employee"> </i>
+		<i  style= "color:red;" class ="icon fa fa-trash fa-3x" type="button" id="{{employee.id}}" data-toggle="modal" data-target="#delete_employee_modal"></i>
+	</div>
+	</div>
+	
+	</div>
+</div>
+
+  {% endfor %}
+  	
+	</div>
+</div>
+ 
+
+{% if message %}
+	<h1>{{ message }}</h1>
+{% endif %}
+
+
+
+
+
+
+
+
+
+
+
+
+{% include "employer/base.html" %}
+<script type="text/javascript"  src="{% static 'employer/js/home_page.js' %}"></script>
+<script type="text/javascript">
+  $('#edit_employee').on('show.bs.modal', function (event) {
+    var button = $(event.relatedTarget) // Button that triggered the modal
+    var employee_id = button.attr("id")
+    var employee = null
+    //find the modal
+    var modal = $(this)
+    modal.find("#last-name").val("Found iT!!")
+
+    "{% for employee in employees%}"
+      var employee_id_target = "{{employee.id}}"
+      //found the employee that needs to be edited
+      if (employee_id === employee_id_target){
+        
+        modal.find("#employee_id").val(employee_id)//ISYED_CHANGE_TO_ID
+        modal.find("#edit_employee_url").val("{{employee.image_url}}")
+        if ("{{employee.image_url}}" === ""){
+          modal.find("#edit_employee_image").attr("src","https://sterling.com/wp-content/themes/Sterling/images/no-image-found-360x260.png")
+        }else{
+          modal.find("#edit_employee_image").attr("src","{{employee.image_url}}")
+        }
+        
+        
+        modal.find("#first-name").val("{{employee.first_name}}")
+        modal.find("#last-name").val("{{employee.last_name}}")
+        modal.find("#dob").val("{{employee.dob}}")
+        modal.find("#email").val("{{employee.email}}")
+        modal.find("#phone-number").val("{{employee.phone}}")
+        modal.find("#address").val("{{employee.address}}")
+        modal.find("#title").val("{{employee.title}}")
+        modal.find("#reports-to").val("{{employee.Supervisor}}")
+
+      }
+    "{%endfor%}"
+});
+
+    $('#delete_employee_modal').on('show.bs.modal', function (event) {  
+      var button = $(event.relatedTarget) // Button that triggered the modal
+      var employee_id = button.attr("id")
+      var url = 'delete_employee/' + employee_id;
+      var modal = $(this)
+
+
+      modal.find("#delete_employee_btn").attr("onclick", "window.location.href = \'"  + url  +"\';")
+    });
+</script>
+</body>
+</html>
